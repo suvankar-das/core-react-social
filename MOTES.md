@@ -1,4 +1,5 @@
-- Currently I have 4 projects. Make sure You disable nullable like this `<Nullable>disable</Nullable>`
+- To create react project , using vite 
+`npm create vite@latest` and then select `typescript + swc`
 
-- In order to run migration , `tools` package should be installed on Persisentence and `design` on API.
+- Then go to the folder and type `npm install` , once completed , type `npm run dev`
 - 
