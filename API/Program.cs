@@ -1,8 +1,12 @@
+using Application.Activities;
+using Application.Core;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.UnitOfWorks;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 
@@ -11,12 +15,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+string CORS_NAME = "CorsPolicy";
+string ALLOWED_HOST = "http://localhost:3000";
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 });
 
+
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy(CORS_NAME, policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(ALLOWED_HOST);
+    });
+});
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// mediatr
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(typeof(List.Handler).Assembly));
+// add auto mapper service
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 
@@ -27,7 +48,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 //app.UseHttpsRedirection();
+app.UseCors(CORS_NAME);
 
 app.UseAuthorization();
 

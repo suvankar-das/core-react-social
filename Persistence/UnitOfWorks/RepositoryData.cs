@@ -22,9 +22,9 @@ namespace Persistence.UnitOfWorks
             _dbSet = _db.Set<T>();
         }
 
-        public async Task AddEntityAsync(T entity)
+        public void AddEntity(T entity)
         {
-            await _dbSet.AddAsync(entity);
+             _dbSet.Add(entity);
         }
 
         public async Task DeleteAsync(T entity)
@@ -33,7 +33,7 @@ namespace Persistence.UnitOfWorks
             await Task.CompletedTask;
         }
 
-        public async Task RemoveRangeAsync(IEnumerable<T> entities)
+        public async Task RemoveRangeAsync(List<T> entities)
         {
             _dbSet.RemoveRange(entities);
             await Task.CompletedTask;
@@ -56,7 +56,7 @@ namespace Persistence.UnitOfWorks
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(string includeProperties = null)
+        public async Task<List<T>> GetAllAsync(string includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
 
