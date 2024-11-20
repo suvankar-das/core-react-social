@@ -16,6 +16,7 @@ interface Props {
     handleFormClose: () => void;
     upsertActivity: (activity: Activity) => void;
     handleDeleteActivity: (id: string) => void;
+    submitting: boolean
 
 }
 
@@ -23,11 +24,11 @@ interface Props {
 
 const ActivityDashboard = ({ activities, selectedActivity, handleSelectedActivity,
     cancelSelectedActivity, handleFormOpen, handleFormClose, upsertActivity, handleDeleteActivity,
-    editMode }: Props) => {
+    submitting, editMode }: Props) => {
     return (
         <Grid>
             <Grid.Column width={10}>
-                <ActivityList activities={activities} handleSelectedActivity={handleSelectedActivity} handleDeleteActivity={handleDeleteActivity}></ActivityList>
+                <ActivityList activities={activities} handleSelectedActivity={handleSelectedActivity} handleDeleteActivity={handleDeleteActivity} submitting={submitting}></ActivityList>
             </Grid.Column>
             <Grid.Column width={6}>
                 {
@@ -38,7 +39,7 @@ const ActivityDashboard = ({ activities, selectedActivity, handleSelectedActivit
                         handleFormOpen={handleFormOpen}
                     />
                 }
-                {editMode && <ActivityForm handleFormClose={handleFormClose} selectedActivity={selectedActivity} upsertActivity={upsertActivity} />}
+                {editMode && <ActivityForm handleFormClose={handleFormClose} selectedActivity={selectedActivity} upsertActivity={upsertActivity} submitting={submitting} />}
             </Grid.Column>
         </Grid>
     )

@@ -6,11 +6,10 @@ interface Props {
     handleFormClose: () => void;
     selectedActivity: Activity | undefined;
     upsertActivity: (activity: Activity) => void;
+    submitting: boolean
 }
 
-const ActivityForm = ({ handleFormClose, selectedActivity, upsertActivity }: Props) => {
-
-
+const ActivityForm = ({ handleFormClose, selectedActivity, upsertActivity, submitting }: Props) => {
 
 
     const initialState: Activity = selectedActivity ?? {
@@ -75,7 +74,7 @@ const ActivityForm = ({ handleFormClose, selectedActivity, upsertActivity }: Pro
                     onChange={changeActivityData}
                 />
 
-                <Button floated="right" positive type="submit" content="Submit" />
+                <Button loading={submitting} floated="right" positive type="submit" content="Submit" />
                 <Button floated="right" type="button" content="Cancel" onClick={handleFormClose} />
             </Form>
         </Segment>
