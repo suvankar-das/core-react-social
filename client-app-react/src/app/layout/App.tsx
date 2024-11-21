@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { Button, Container, List } from 'semantic-ui-react';
 import { Activity } from '../models/activity';
 import Navbar from './Navbar';
 import './styles.css';
@@ -8,9 +8,16 @@ import ActivityDashboard from '../../features/activities/dashboard/activitydashb
 import { v4 as uuid } from 'uuid';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
+import { useStore } from '../stores/store';
+import { observer } from 'mobx-react-lite';
 
 
 function App() {
+
+    const { activityStore } = useStore();
+
+
+
     const [activities, setActivities] = useState<Activity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
     const [editMode, setEditMode] = useState(false);
@@ -97,7 +104,8 @@ function App() {
         <React.Fragment>
             <Navbar handleFormOpen={handleFormOpen} />
             <Container style={{ marginTop: '7em' }} >
-
+                <h2>{activityStore.title}</h2>
+                <Button content="Test Mobx Action" positive onClick={() => activityStore.setTitle(Math.random().toString())}></Button>
                 <ActivityDashboard activities={activities}
                     selectedActivity={selectedActivity}
                     handleSelectedActivity={handleSelectedActivity}
@@ -116,4 +124,4 @@ function App() {
     );
 }
 
-export default App;
+export default observer(App);
