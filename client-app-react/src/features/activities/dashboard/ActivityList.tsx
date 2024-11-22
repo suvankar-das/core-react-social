@@ -1,18 +1,18 @@
-import React, { SyntheticEvent, useState } from "react";
-import { Activity } from "../../../app/models/activity";
+import { SyntheticEvent, useState } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
-interface Props {
-    activities: Activity[];
-    handleSelectedActivity: (id: string) => void;
-    handleDeleteActivity: (id: string) => void;
-    submitting: boolean
-}
 
-const ActivityList = ({ activities, handleSelectedActivity, handleDeleteActivity, submitting }: Props) => {
+const ActivityList = () => {
+
+    const { activityStore } = useStore();
+    const { activities, handleSelectedActivity, handleDeleteActivity, submitting } = activityStore;
 
     // because react will show loading wheel to all delete button
     // so to show loading only with current delete button
+
+
     const [targetDeleteButton, setTargetDeleteButton] = useState('');
 
     const showProperLoadingWhileDeletion = (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
@@ -38,7 +38,9 @@ const ActivityList = ({ activities, handleSelectedActivity, handleDeleteActivity
                             </Item.Description>
 
                             <Item.Extra>
-                                <Button floated="right" content="view" color="blue" onClick={() => handleSelectedActivity(activity.id)} />
+                                <Button floated="right" content="view" color="blue"
+                                    onClick={() => handleSelectedActivity(activity.id)} />
+
                                 <Button
                                     name={activity.id}
                                     loading={submitting && targetDeleteButton === activity.id}
@@ -58,4 +60,4 @@ const ActivityList = ({ activities, handleSelectedActivity, handleDeleteActivity
 
 
 
-export default ActivityList;
+export default observer(ActivityList);
