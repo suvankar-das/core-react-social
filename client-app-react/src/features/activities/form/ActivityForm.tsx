@@ -1,17 +1,24 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
 import { Activity } from "../../../app/models/activity";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { v4 as uuid } from 'uuid';
 
 
 
 const ActivityForm = () => {
 
     const { activityStore } = useStore();
-    const { selectedActivity, handleFormClose, createActivity, updateActivity, loading } = activityStore;
+    const { createActivity, updateActivity, loading, loadSingleActivity } = activityStore;
 
-    const initialState: Activity = selectedActivity ?? {
+    const { id } = useParams();
+
+    const navigate = useNavigate();
+
+    const [activityValue, setActivityValue] = useState<Activity>({
         id: '',
         title: '',
         category: '',
@@ -19,18 +26,43 @@ const ActivityForm = () => {
         date: '',
         description: '',
         venue: '',
-    };
+    });
 
-    const [activityValue, setActivityValue] = useState(initialState);
+    useEffect(() => {
+        console.log('act form', activityValue, id);
+
+        const fetchData = async () => {
+            if (id) {
+                debugger
+                const act = await loadSingleActivity(id);
+                setActivityValue(act!);
+            }
+        };
+
+        fetchData();
+    }, [id, loadSingleActivity]);
 
     const changeActivityData = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         setActivityValue({ ...activityValue, [name]: value });
     };
 
-    const submitActivity = () => {
-        activityValue.id ? updateActivity(activityValue) : createActivity(activityValue);
+
+    // after submitting , redirect user to the details of that activity
+    const submitActivity = async () => {
+
+        if (!activityValue.id) {
+            activityValue.id = uuid();
+
+            await createActivity(activityValue);
+            navigate(`/activities/${activityValue.id}`);
+        } else {
+            await updateActivity(activityValue);
+            navigate(`/activities/${activityValue.id}`);
+        }
     };
+
+    if (!activityValue) return <LoadingComponent content="loading activity..."></LoadingComponent>
 
     return (
         <Segment clearing>
@@ -74,7 +106,7 @@ const ActivityForm = () => {
                 />
 
                 <Button loading={loading} floated="right" positive type="submit" content="Submit" />
-                <Button floated="right" type="button" content="Cancel" onClick={handleFormClose} />
+                <Button floated="right" type="button" content="Cancel" as={Link} to="/activities" />
             </Form>
         </Segment>
     );

@@ -26,8 +26,7 @@ export default class ActivityStore {
                 this.loading = true;
                 let formattedDateActivities: Activity[] = [];
                 activities.forEach(act => {
-                    act.date = act.date.split('T')[0];
-                    formattedDateActivities.push(act);
+                    formattedDateActivities.push(this.setActivityDate(act));
                 });
 
                 this.activities = formattedDateActivities
@@ -42,28 +41,48 @@ export default class ActivityStore {
         }
     }
 
-    handleSelectedActivity = (id: string) => {
-        this.selectedActivity = this.activities.find(x => x.id === id);
-    }
+    loadSingleActivity = async (id: string) => {
+        let activity = this.activities.find(a => a.id === id);
 
-    handleCancelAcivity = () => {
-        this.selectedActivity = undefined;
-    }
-
-
-    handleFormOpen = (id?: string) => {
-        if (id) {
-            this.handleSelectedActivity(id);
-
+        if (activity) {
+            this.selectedActivity = activity;
+            return activity;
         } else {
-            this.handleCancelAcivity();
+            this.loading = true;
+            if (this.activities.length === 0) {
+                await this.loadActivities();
+            }
+
+            activity = this.activities.find(a => a.id === id);
+
+            if (activity) {
+                this.selectedActivity = activity;
+                this.loading = false;
+                return activity;
+            } else {
+                try {
+                    activity = await agent.Activities.details(id);
+                    runInAction(() => {
+                        this.setActivityDate(activity!);
+                        this.selectedActivity = activity;
+                        this.loading = false;
+                    });
+                    return activity;
+                } catch (error) {
+                    runInAction(() => {
+                        this.loading = false;
+                        console.error(error);
+                    });
+                }
+            }
         }
+    };
 
-        this.editMode = true;
-    }
 
-    handleFormClose = () => {
-        this.editMode = false;
+
+    private setActivityDate = (activity: Activity) => {
+        activity.date = activity.date.split('T')[0];
+        return activity;
     }
 
 
@@ -120,9 +139,6 @@ export default class ActivityStore {
         try {
             runInAction(() => {
                 this.activities = ([...this.activities.filter(x => x.id !== id)]);
-                if (this.selectedActivity?.id == id) {
-                    this.handleCancelAcivity();
-                }
                 this.loading = false;
                 this.submitting = false;
             })
