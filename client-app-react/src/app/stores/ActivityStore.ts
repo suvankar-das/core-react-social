@@ -149,4 +149,34 @@ export default class ActivityStore {
         }
 
     }
+
+
+    get GroupedActivities() {
+        const groupedActivities = new Map<string, Activity[]>();
+
+        this.activities.forEach(activity => {
+            const dateKey = activity.date;
+            if (!groupedActivities.has(dateKey)) {
+                groupedActivities.set(dateKey, []);
+            }
+            groupedActivities.get(dateKey)!.push(activity);
+        });
+
+
+        // Declare a constant variable `result` with a specific type.
+        // The type is an array of objects, where:
+        // 1. Each object has:
+        //    - A `date` property of type `string`.
+        //    - An `activities` property, which is an array of `Activity` objects.
+        // 2. The `[]` after the object type indicates that `result` is an array of these objects.
+        // 3. The `= []` initializes `result` as an empty array.
+        const result: { date: string; activities: Activity[] }[] = [];
+
+        for (const [date, activities] of groupedActivities) {
+            result.push({ date, activities });
+        }
+
+        return result;
+    }
+
 }

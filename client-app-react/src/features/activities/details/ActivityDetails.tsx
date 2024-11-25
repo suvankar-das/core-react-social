@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import {
-    CardMeta,
-    CardHeader,
-    CardDescription,
-    CardContent,
-    Card,
-    Icon,
-    Image,
-    Button,
+    Grid,
 } from 'semantic-ui-react'
 import { useStore } from "../../../app/stores/store";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import ActivityDetailsHeader from "./ActivityDetailsHeader";
+import ActivityDetailsInfo from "./ActivityDetailsInfo";
+import ActivityDetailsChat from "./ActivityDetailsChat";
+import ActivityDetailsSidebar from "./ActivityDetailsSidebar";
 
 
 
@@ -21,7 +18,7 @@ import { Link, useParams } from "react-router-dom";
 const ActivityDetails = () => {
 
     const { activityStore } = useStore();
-    const { selectedActivity, loadSingleActivity, loading } = activityStore;
+    const { selectedActivity, loadSingleActivity } = activityStore;
 
     const { id } = useParams();
 
@@ -34,24 +31,17 @@ const ActivityDetails = () => {
     if (!selectedActivity) return <LoadingComponent />;
 
     return (
-        <Card fluid>
-            <Image src={`/assets/categoryImages/${selectedActivity.category}.jpg`} />
-            <CardContent>
-                <CardHeader>{selectedActivity.title}</CardHeader>
-                <CardMeta>
-                    <span>{selectedActivity.date}</span>
-                </CardMeta>
-                <CardDescription>
-                    {selectedActivity.description}
-                </CardDescription>
-            </CardContent>
-            <CardContent extra>
-                <Button.Group widths='2'>
-                    <Button basic color="blue" as={Link} to={`/manage/${selectedActivity.id}`}>Edit</Button>
-                    <Button basic color="grey" as={Link} to="/activities">Cancel</Button>
-                </Button.Group>
-            </CardContent>
-        </Card>
+        <Grid>
+            <Grid.Column width={10}>
+                <ActivityDetailsHeader activity={selectedActivity} />
+                <ActivityDetailsInfo activity={selectedActivity} />
+                <ActivityDetailsChat />
+            </Grid.Column>
+            <Grid.Column width={6}>
+                <ActivityDetailsSidebar />
+
+            </Grid.Column>
+        </Grid>
     )
 }
 
