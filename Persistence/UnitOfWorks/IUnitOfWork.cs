@@ -10,6 +10,6 @@ namespace Persistence.UnitOfWorks
     {
         IActivityRepository ActivityRepository { get; }
 
-        Task Save();
+        Task<int> Save();
     }
 }

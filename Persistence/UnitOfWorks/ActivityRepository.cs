@@ -16,10 +16,10 @@ namespace Persistence.UnitOfWorks
             _db = context;
         }
 
-        public async Task Update(Activity activity)
+        public async Task<int> Update(Activity activity)
         {
             _db.TblActivity.Update(activity);
-            await _db.SaveChangesAsync(); 
+            return await _db.SaveChangesAsync(); 
         }
     }
 

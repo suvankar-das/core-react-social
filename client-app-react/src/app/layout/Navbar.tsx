@@ -15,6 +15,9 @@ const Navbar = () => {
                 <Menu.Item>
                     <Button as={NavLink} to="/createActivity" positive content="Activity"></Button>
                 </Menu.Item>
+                <Menu.Item>
+                    <Button as={NavLink} to="/errors" content="Errors"></Button>
+                </Menu.Item>
             </Container>
         </Menu>
 

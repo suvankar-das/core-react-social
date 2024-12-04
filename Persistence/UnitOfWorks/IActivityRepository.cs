@@ -9,6 +9,6 @@ namespace Persistence.UnitOfWorks
 {
     public interface IActivityRepository : IRepository<Activity>
     {
-        Task Update(Activity activity);
+        Task<int> Update(Activity activity);
     }
 }

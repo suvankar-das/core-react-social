@@ -1,4 +1,5 @@
 using API.ExtensionMethods;
+using API.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -16,6 +17,10 @@ string ALLOWED_HOST = "http://localhost:3000";
 builder.Services.AddApplicationServices(builder.Configuration, CORS_NAME,ALLOWED_HOST);
 
 var app = builder.Build();
+
+// exception middle ware must be at the top of the middleware tree
+app.UseMiddleware<ExceptionMiddleware>();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

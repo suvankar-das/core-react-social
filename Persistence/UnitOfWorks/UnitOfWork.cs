@@ -18,9 +18,9 @@ namespace Persistence.UnitOfWorks
             ActivityRepository = new ActivityRepository(_db);
         }
 
-        public async Task Save()
+        public async Task<int> Save()
         {
-            await _db.SaveChangesAsync(); 
+            return await _db.SaveChangesAsync();
         }
     }
 

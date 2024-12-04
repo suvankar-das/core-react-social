@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Core;
+using MediatR;
 using Persistence.UnitOfWorks;
 using Domain;
 
@@ -6,12 +7,12 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Activity>
+        public class Query : IRequest<Result<Activity>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Activity>
+        public class Handler : IRequestHandler<Query, Result<Activity>>
         {
             private readonly IUnitOfWork _unitOfWork;
 
@@ -20,9 +21,10 @@ namespace Application.Activities
                 _unitOfWork = unitOfWork;
             }
 
-            public async Task<Domain.Activity> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _unitOfWork.ActivityRepository.GetFirstOrDefaultAsync(x => x.Id == request.Id);
+                var activity = await _unitOfWork.ActivityRepository.GetFirstOrDefaultAsync(x => x.Id == request.Id);
+                return Result<Activity>.Success(activity);
             }
         }
     }
